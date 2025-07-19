@@ -29,7 +29,7 @@ public class Libro {
         return "Libro{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
-                ", autor='" + autor + '\'' +
+                ", autor='" + autor.getnombre(0) + '\'' +
                 ", idioma='" + idioma + '\'' +
                 ", descargas=" + descargas +
                 '}';
