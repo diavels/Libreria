@@ -13,9 +13,10 @@ public class Autor {
     private String fechaDeNacimiento;
     private String fechaDeFallecimiento;
     
-    @OneToMany(mappedBy = "Autor", cascade = CascadeType.ALL, fetch= FetchType.EAGER)
-    List<Libro> libros;
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+    private List<Libro> libros = new ArrayList<>();
 
+    
     public Autor (Autor autor){
         this.nombre = String.valueOf(autor.nombre());
 }
