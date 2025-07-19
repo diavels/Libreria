@@ -9,17 +9,18 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
    private Long id;
+    @column(unique = true)
     private String titulo;
     private String idioma;
     private Double descargas;
-    @ManyToOne
+    @ManyToOne()
     private Autor autor;
 
 
-    public Libro(Libro libro){
+    public Libro(Libro libro, Autor autor){
         this.titulo = libro.titulo;
-        this.autor = libro.autor;
-        this.idioma = libro.idioma;
+        this.autor = autor;
+        this.idioma = libro.idioma().get(0);
         this.descargas = libro.descargas;
     }
 
