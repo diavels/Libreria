@@ -1,21 +1,34 @@
 package com.propio.literalura.Principal;
 
-import com.propio.literalura.Service.ConsumoAPI;
 
+import com.propio.literalura.DTO.Datos;
+import com.propio.literalura.DTO.Libro;
+import com.propio.literalura.Service.ConsumoAPI;
+import com.propio.literalura.Service.ConvierteDatos;
+
+import java.io.IOException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class principal {
-    private static String UrlApi = "https://gutendex.com/books?search=";
 
-    public static void menuPrincipal(){
-        //generar el scanner
-        Scanner teclado = new Scanner(System.in);
-        int opcion = 0;
+    private final String UrlApi = "https://gutendex.com/books/?search=";
+    Scanner teclado = new Scanner(System.in);
+    private ConsumoAPI consumoAPI = new ConsumoAPI();
+    private ConvierteDatos conversor = new ConvierteDatos();
+
+
+
+    public void menuPrincipal() throws IOException, InterruptedException {
+
+        int opcion = -1;
         //generar el menu y su bucle
-        do{
+        while (opcion != 0) {
             System.out.println("""
                     =====Bienvenidos a LiterAlura=========
+                    
                     Elige una opcion
+                    
                     1 - BUSCA UN LIBRO POR SU NOMBRE
                     2 - LISTA DE LIBROS REGISTRADOS
                     3 - LISTA DE AUTORES REGISTRADOS
@@ -26,10 +39,11 @@ public class principal {
                     0 - SALIR
                     """);
 
-        }while(opcion != 0);
-        opcion = teclado.nextInt();
-        //genera el switch que integra los metodos a aplicar segun cada caso
-        switch (opcion){
+            opcion = teclado.nextInt();
+            teclado.nextLine();
+            //genera el switch que integra los metodos a aplicar segun cada caso
+
+         switch (opcion){
             case 1:
                 //funcion de budcar libro por nombre
                 buscarLibro();
@@ -57,29 +71,44 @@ public class principal {
                 break;
             default:
                 System.out.println("opcion incorrecta, ingrese otra opcion");
-                menuPrincipal();
+         }
         }
-        
-
-
     }
 
 
-    private static void buscarLibro() {
-        var consumoApi = new ConsumoAPI();
-        var json = consumoApi.obtenerDatos(UrlApi);
+    private void buscarLibro() {
+        System.out.println("¿Que libro desea buscar?");
+        var nombreLibro= teclado.nextLine();
+        var Json = consumoAPI.obtenerDatos(UrlApi + nombreLibro.replace(" ", "+"));
+        Datos datos = conversor.obtenerDatos(Json, Datos.class);
+        System.out.println(datos);
+        Optional<Libro> libroBuscado = datos.resultados().stream()
+                .filter(libro -> libro.titulo().toUpperCase().contains(nombreLibro.toUpperCase()))
+                .findFirst();
 
+        if (libroBuscado.isPresent()){
+            System.out.println("*********************************");
+            System.out.println("Libro encontrado: ");
+            System.out.println("Titulo: " + libroBuscado.get().titulo());
+            System.out.println("Autor: " + libroBuscado.get().autor().get(0).nombre());
+            System.out.println("Idioma: " + libroBuscado.get().idioma());
+            System.out.println("Numero de Descargas: " + libroBuscado.get().descargas());
+            System.out.println("*********************************");
+        }else {
+            System.out.println("Libro no encontrado");
+        }
     }
 
-    private static void mostrarListaDeLibros() {
+    private  void mostrarListaDeLibros() {
+        System.out.println();
     }
 
-    private static void mostrarListaDeAutores() {
+    private  void mostrarListaDeAutores() {
     }
 
-    private static void mostrarAutoresVivos() {
+    private  void mostrarAutoresVivos() {
     }
 
-    private static void mostrarLibrosPorIdioma() {
+    private  void mostrarLibrosPorIdioma() {
     }
 }
