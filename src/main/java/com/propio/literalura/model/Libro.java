@@ -26,13 +26,12 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Libro{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", autor='" + autor.getnombre(0) + '\'' +
-                ", idioma='" + idioma + '\'' +
-                ", descargas=" + descargas +
-                '}';
+        return "************" + "Libro" + "***********" + "\n" +
+                "Titulo='" + titulo + '\n' +
+                "Autor='" + autor.get.nombre(0) + '\n' +
+                "Idioma='" + idioma + '\n' +
+                "Descargas=" + descargas + "\n"
+                "**************************************" ;
     }
 
     public Long getId() {
