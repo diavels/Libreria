@@ -105,11 +105,8 @@ public class principal {
 
         if (libroBuscado.isPresent()) {
             DatosLibro datosLibro = libroBuscado.get();
-            Libro libroConvertido = new Libro(
-                    datosLibro.titulo(),
-                    datosLibro.autor(),
-                    datosLibro.idioma(),
-                    datosLibro.descargas());
+            Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro);
+            System.out.println("Libro convertido: " + libroConvertido);
         } else {
             System.out.println("Libro no encontrado");
         }
