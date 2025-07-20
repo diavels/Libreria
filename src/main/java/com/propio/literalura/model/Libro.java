@@ -18,7 +18,7 @@ public class Libro {
 
     public Libro(){}
 
-    public static Libro convertirDesdeDatos(DatosLibro datosLibro) {
+    public static Libro convertirDesdeDatos(DatosLibro datosLibro, Autor autor) {
         // Ajusta según los tipos de tus campos
     Autor autor = new Autor(datosLibro.autor()); // Si es necesario
     return new Libro(
