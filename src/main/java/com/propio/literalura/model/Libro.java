@@ -19,13 +19,12 @@ public class Libro {
     public Libro(){}
 
     public static Libro convertirDesdeDatos(DatosLibro datosLibro, Autor autor) {
-        // Ajusta según los tipos de tus campos
-    Autor autor = new Autor(datosLibro.autor()); // Si es necesario
-    return new Libro(
-        datosLibro.titulo(),
-        autor, // o datosLibro.autor() si es String
-        datosLibro.idioma(),
-        datosLibro.descargas()
+        Libro libro = new Libro();
+    libro.setTitulo(datosLibro.titulo());
+    libro.setIdioma(String.valueOf(datosLibro.idioma()));
+    libro.setDescargas(datosLibro.descargas());
+    libro.setAutor(autor);  // El autor debe buscarse o crearse antes
+    return libro;
     );
     }
 
