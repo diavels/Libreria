@@ -1,5 +1,6 @@
 package com.propio.literalura.model;
 
+import com.propio.literalura.DTO.DatosLibro;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,29 +10,32 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
    private Long id;
-    @column(unique = true)
     private String titulo;
     private String idioma;
     private Double descargas;
-    @ManyToOne()
+    @ManyToOne
     private Autor autor;
 
+    public Libro(){}
 
-    public Libro(Libro libro, Autor autor){
-        this.titulo = libro.titulo;
-        this.autor = autor;
-        this.idioma = libro.idioma().get(0);
-        this.descargas = libro.descargas;
+    public static Libro convertirDesdeDatos(DatosLibro datosLibro, Autor autor) {
+        Libro libro = new Libro();
+        libro.setTitulo(datosLibro.titulo());
+        libro.setIdioma(String.valueOf(datosLibro.idioma()));
+        libro.setDescargas(datosLibro.descargas());
+        libro.setAutor(autor);  // El autor debe buscarse o crearse antes
+        return libro;
     }
+
 
     @Override
     public String toString() {
         return "************" + "Libro" + "***********" + "\n" +
                 "Titulo='" + titulo + '\n' +
-                "Autor='" + autor.get.nombre(0) + '\n' +
+                "Autor='" + autor.getNombre()+ '\n' +
                 "Idioma='" + idioma + '\n' +
-                "Descargas=" + descargas + "\n"
-                "**************************************" ;
+                "Descargas=" + descargas + "\n" +
+        "**************************************";
     }
 
     public Long getId() {
