@@ -104,9 +104,20 @@ public class principal {
                 .findFirst();
 
         if (libroBuscado.isPresent()) {
-            DatosLibro datosLibro = libroBuscado.get();
-            Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro);
-            System.out.println("Libro convertido: " + libroConvertido);
+           DatosLibro datosLibro = libroBuscado.get();
+        // Buscar si existe el autor
+        String nombreAutor = datosLibro.autor();
+        Autor autor = autorRepository.findByNombre(nombreAutor)
+                         .orElseGet(() -> {
+                             Autor nuevoAutor = new Autor();
+                             nuevoAutor.setNombre(nombreAutor);
+                             return autorRepository.save(nuevoAutor);
+                         });
+        // Ahora sí, crear el libro
+        Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro, autor);
+        // Guardar libro o mostrarlo
+        libroRepository.save(libroConvertido);
+        System.out.println("Libro guardado: " + libroConvertido);
         } else {
             System.out.println("Libro no encontrado");
         }
