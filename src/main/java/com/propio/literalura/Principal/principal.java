@@ -3,6 +3,7 @@ package com.propio.literalura.Principal;
 import com.propio.literalura.DTO.Datos;
 import com.propio.literalura.DTO.DatosLibro;
 import com.propio.literalura.Repository.LibroRepository;
+import com.propio.literalura.Repository.AutorRepository;
 import com.propio.literalura.Service.ConsumoAPI;
 import com.propio.literalura.Service.ConvierteDatos;
 import com.propio.literalura.model.Autor;
@@ -19,6 +20,8 @@ public class principal {
 
     @Autowired
     private final LibroRepository libroRepository;
+    @Autowired
+    private final AutorRepository AutorRepository;
 
     private final String UrlApi = "https://gutendex.com/books/?search=";
     Scanner teclado = new Scanner(System.in);
@@ -26,8 +29,9 @@ public class principal {
     private ConvierteDatos conversor = new ConvierteDatos();
 
 
-    public principal(LibroRepository libroRepository) {
+    public principal(LibroRepository libroRepository, AutorRepository AutorRepository) {
         this.libroRepository = libroRepository;
+        this.AutorRepository = AutorRepository;
     }
 
 
@@ -106,12 +110,12 @@ public class principal {
         if (libroBuscado.isPresent()) {
            DatosLibro datosLibro = libroBuscado.get();
         // Buscar si existe el autor
-        String nombreAutor = datosLibro.autor();
-        Autor autor = autorRepository.findByNombre(nombreAutor)
+        String nombreAutor = datosLibro.autor().get(0).nombre();
+        Autor autor = AutorRepository.findByNombre(nombreAutor)
                          .orElseGet(() -> {
                              Autor nuevoAutor = new Autor();
                              nuevoAutor.setNombre(nombreAutor);
-                             return autorRepository.save(nuevoAutor);
+                             return AutorRepository.save(nuevoAutor);
                          });
         // Ahora sí, crear el libro
         Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro, autor);
