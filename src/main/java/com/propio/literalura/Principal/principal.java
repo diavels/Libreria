@@ -11,7 +11,6 @@ import com.propio.literalura.model.Libro;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -19,9 +18,9 @@ import java.util.Scanner;
 public class principal {
 
     @Autowired
-    private final LibroRepository libroRepository;
+    private final LibroRepository libroRepositorio;
     @Autowired
-    private final AutorRepository AutorRepository;
+    private final AutorRepository AutorRepositorio;
 
     private final String UrlApi = "https://gutendex.com/books/?search=";
     Scanner teclado = new Scanner(System.in);
@@ -32,8 +31,8 @@ public class principal {
 
 
     public principal(LibroRepository libroRepository, AutorRepository AutorRepository) {
-        this.libroRepository = libroRepository;
-        this.AutorRepository = AutorRepository;
+        this.libroRepositorio = libroRepository;
+        this.AutorRepositorio = AutorRepository;
     }
 
 
@@ -116,18 +115,18 @@ public class principal {
             String fechaNacimiento = nombreAutores.fechaDeNacimiento(); // Puede que sea un String o LocalDate
             String fechaFallecimiento = nombreAutores.fechaDeFallecimiento();
             //Busca si existe el nombre del autor
-            Autor datosAutor = AutorRepository.findByNombre(nombreAutor)
+            Autor datosAutor = AutorRepositorio.findByNombre(nombreAutor)
                     .orElseGet(() -> {
                         Autor nuevoDatosAutor = new Autor();
                         nuevoDatosAutor.setNombre(nombreAutor);
                         nuevoDatosAutor.setFechaDeNacimiento(fechaNacimiento);
                         nuevoDatosAutor.setFechaDeFallecimiento(fechaFallecimiento);
-                        return AutorRepository.save(nuevoDatosAutor);
+                        return AutorRepositorio.save(nuevoDatosAutor);
                     });
             // Ahora sí, crear el libro
             Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro, datosAutor);
             // Guardar libro o mostrarlo
-            libroRepository.save(libroConvertido);
+            libroRepositorio.save(libroConvertido);
             System.out.println("Libro guardado: \n" + libroConvertido);
 
 
@@ -139,25 +138,20 @@ public class principal {
 
 
     private void mostrarListaDeLibros() {
-        libros = libroRepository.findAll();
+        libros = libroRepositorio.findAll();
         System.out.println(libros);
     }
 
     private void mostrarListaDeAutores() {
-        autores = AutorRepository.findAll();
+        autores = AutorRepositorio.findAll();
         System.out.println(autores);
     }
 
     public void mostrarAutoresVivos() {
         System.out.print("Ingrese el año para consultar autores vivos: ");
-        int año = teclado.nextInt();
-
-        List<Autor> autoresVivos = AutorRepository.encontrarAutoresVivosEn(año);
-
-        autoresVivos.forEach(a ->
-                System.out.println(a.getNombre() + " — Nacido: " + a.getFechaDeNacimiento() +
-                        ", Fallecido: " + (a.getFechaDeFallecimiento() != null ? a.getFechaDeFallecimiento() : "Vive"))
-        );
+        var año = teclado.nextLine();
+        List<Autor> autoresVivos = AutorRepositorio.findAutoresVivos(año);
+        System.out.println(autoresVivos);
     }
 
 
