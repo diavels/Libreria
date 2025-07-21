@@ -9,7 +9,7 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-   private Long id;
+    private Long id;
     private String titulo;
     private String idioma;
     private Double descargas;
@@ -20,23 +20,22 @@ public class Libro {
 
     public static Libro convertirDesdeDatos(DatosLibro datosLibro, Autor autor) {
         Libro libro = new Libro();
-    libro.setTitulo(datosLibro.titulo());
-    libro.setIdioma(String.valueOf(datosLibro.idioma()));
-    libro.setDescargas(datosLibro.descargas());
-    libro.setAutor(autor);  // El autor debe buscarse o crearse antes
-    return libro;
-    );
+        libro.setTitulo(datosLibro.titulo());
+        libro.setIdioma(String.valueOf(datosLibro.idioma()));
+        libro.setDescargas(datosLibro.descargas());
+        libro.setAutor(autor);  // El datosAutor debe buscarse o crearse antes
+        return libro;
     }
 
 
     @Override
     public String toString() {
-        return "************" + "Libro" + "***********" + "\n" +
+        return " ************" + "Libro" + "***********" + "\n" +
                 "Titulo='" + titulo + '\n' +
-                "Autor='" + autor.getNombre()+ '\n' +
+                "DatosAutor='" + autor.getNombre()+ '\n' +
                 "Idioma='" + idioma + '\n' +
                 "Descargas=" + descargas + "\n" +
-        "**************************************";
+                "**************************************" + "\n";
     }
 
     public Long getId() {

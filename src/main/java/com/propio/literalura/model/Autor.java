@@ -1,6 +1,5 @@
 package com.propio.literalura.model;
 
-import com.propio.literalura.Repository.AutorRepository;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -16,7 +15,15 @@ public class Autor {
     private String fechaDeFallecimiento;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch= FetchType.EAGER)
-    private List<Libro> libros = new ArrayList<>();
+    private List<Libro> Libros = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "\n" + "****************" + "\n"+
+                "Autor: " + nombre + "\n"+
+                "Fecha de Nacimiento: " + fechaDeNacimiento+ "\n"+
+                "Fecha de Fallecimiento: " + fechaDeFallecimiento+ "\n";
+    }
 
     public Autor(){}
 
@@ -53,11 +60,11 @@ public class Autor {
     }
 
     public List<Libro> getLibros() {
-        return libros;
+        return Libros;
     }
 
-    public void setLibros(List<Libro> libros) {
-        this.libros = libros;
+    public void setLibros(List<Libro> Libros) {
+        this.Libros = Libros;
     }
 
 

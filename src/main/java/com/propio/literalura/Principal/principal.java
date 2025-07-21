@@ -1,5 +1,5 @@
 package com.propio.literalura.Principal;
-
+import com.propio.literalura.DTO.DatosAutor;
 import com.propio.literalura.DTO.Datos;
 import com.propio.literalura.DTO.DatosLibro;
 import com.propio.literalura.Repository.LibroRepository;
@@ -11,10 +11,10 @@ import com.propio.literalura.model.Libro;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-
-import static com.propio.literalura.model.Libro.convertirDesdeDatos;
 
 public class principal {
 
@@ -27,6 +27,8 @@ public class principal {
     Scanner teclado = new Scanner(System.in);
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
+    private List<Libro> libros;
+    private List<Autor> autores;
 
 
     public principal(LibroRepository libroRepository, AutorRepository AutorRepository) {
@@ -70,10 +72,10 @@ public class principal {
                     break;
                 case 3:
                     //funcion de mostrar lista de autores registrados
-                    //mostrarListaDeAutores();
+                    mostrarListaDeAutores();
                 case 4:
                     //mostrar lista de autores vivos segun año
-                    //mostrarAutoresVivos();
+                    mostrarAutoresVivos();
                 case 5:
                     //mostrar libros por idioma, debe generar un texto
                     //que pueda hacer elegir entre distintos idiomas
@@ -92,8 +94,6 @@ public class principal {
     }
 
 
-
-
     private Datos getDatosLibro() {
         System.out.println("¿Que libro desea buscar?");
         var nombreLibro = teclado.nextLine();
@@ -107,28 +107,60 @@ public class principal {
         Optional<DatosLibro> libroBuscado = libro.resultados().stream()
                 .findFirst();
 
+
         if (libroBuscado.isPresent()) {
-           DatosLibro datosLibro = libroBuscado.get();
-        // Buscar si existe el autor
-        String nombreAutor = datosLibro.autor().get(0).nombre();
-        Autor autor = AutorRepository.findByNombre(nombreAutor)
-                         .orElseGet(() -> {
-                             Autor nuevoAutor = new Autor();
-                             nuevoAutor.setNombre(nombreAutor);
-                             return AutorRepository.save(nuevoAutor);
-                         });
-        // Ahora sí, crear el libro
-        Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro, autor);
-        // Guardar libro o mostrarlo
-        libroRepository.save(libroConvertido);
-        System.out.println("Libro guardado: " + libroConvertido);
+            DatosLibro datosLibro = libroBuscado.get();
+            // Trae los datos que se necesitan en DatosAutor.
+            DatosAutor nombreAutores = datosLibro.datosAutor().get(0);
+            String nombreAutor = nombreAutores.nombre();
+            String fechaNacimiento = nombreAutores.fechaDeNacimiento(); // Puede que sea un String o LocalDate
+            String fechaFallecimiento = nombreAutores.fechaDeFallecimiento();
+            //Busca si existe el nombre del autor
+            Autor datosAutor = AutorRepository.findByNombre(nombreAutor)
+                    .orElseGet(() -> {
+                        Autor nuevoDatosAutor = new Autor();
+                        nuevoDatosAutor.setNombre(nombreAutor);
+                        nuevoDatosAutor.setFechaDeNacimiento(fechaNacimiento);
+                        nuevoDatosAutor.setFechaDeFallecimiento(fechaFallecimiento);
+                        return AutorRepository.save(nuevoDatosAutor);
+                    });
+            // Ahora sí, crear el libro
+            Libro libroConvertido = Libro.convertirDesdeDatos(datosLibro, datosAutor);
+            // Guardar libro o mostrarlo
+            libroRepository.save(libroConvertido);
+            System.out.println("Libro guardado: \n" + libroConvertido);
+
+
         } else {
             System.out.println("Libro no encontrado");
         }
+
     }
 
 
     private void mostrarListaDeLibros() {
+        libros = libroRepository.findAll();
+        System.out.println(libros);
     }
+
+    private void mostrarListaDeAutores() {
+        autores = AutorRepository.findAll();
+        System.out.println(autores);
+    }
+
+    public void mostrarAutoresVivos() {
+        System.out.print("Ingrese el año para consultar autores vivos: ");
+        int año = teclado.nextInt();
+
+        List<Autor> autoresVivos = AutorRepository.encontrarAutoresVivosEn(año);
+
+        autoresVivos.forEach(a ->
+                System.out.println(a.getNombre() + " — Nacido: " + a.getFechaDeNacimiento() +
+                        ", Fallecido: " + (a.getFechaDeFallecimiento() != null ? a.getFechaDeFallecimiento() : "Vive"))
+        );
+    }
+
+
+
 
 }

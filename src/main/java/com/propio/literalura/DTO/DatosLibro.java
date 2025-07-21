@@ -8,7 +8,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DatosLibro(
         @JsonAlias("title")  String titulo,
-        @JsonAlias("authors") List<Autor> autor,
+        @JsonAlias("authors") List<DatosAutor> datosAutor,
         @JsonAlias("languages") List<String> idioma,
         @JsonAlias("download_count") Double descargas
 ) {
@@ -17,7 +17,7 @@ public record DatosLibro(
     public String toString() {
         return "************  " + "Libro" + "  ************" + "\n" +
                 "Titulo= " + titulo + '\n' +
-                "Autor= " + autor.get(0).nombre()+ '\n' +
+                "Autor= " + datosAutor.get(0).nombre()+ '\n' +
                 "Idioma= " + idioma + '\n' +
                 "Descargas= " + descargas + "\n" +
                 "*********************************";
