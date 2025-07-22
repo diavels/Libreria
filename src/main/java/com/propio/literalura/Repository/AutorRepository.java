@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface AutorRepository extends JpaRepository<Autor, Long> {
     Optional<Autor> findByNombre(String nombre);
 
-    @Query("SELECT a FROM Autor WHERE a.fechaDeNacimiento <= :año AND a.fechaDeFallecimiento >= :año")
-    List<Autor> findAutoresVivos(String año);
+    @Query("SELECT a FROM Autor a WHERE a.fechaDeNacimiento <= :año AND a.fechaDeFallecimiento >= :año")
+    List<Autor> findAutoresVivos(Integer año);
 }

@@ -6,6 +6,7 @@ import com.propio.literalura.Repository.LibroRepository;
 import com.propio.literalura.Repository.AutorRepository;
 import com.propio.literalura.Service.ConsumoAPI;
 import com.propio.literalura.Service.ConvierteDatos;
+import com.propio.literalura.Service.LibroPorIdioma;
 import com.propio.literalura.model.Autor;
 import com.propio.literalura.model.Libro;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class principal {
         this.libroRepositorio = libroRepository;
         this.AutorRepositorio = AutorRepository;
     }
+
 
 
     public void menuPrincipal() throws IOException, InterruptedException {
@@ -72,14 +74,17 @@ public class principal {
                 case 3:
                     //funcion de mostrar lista de autores registrados
                     mostrarListaDeAutores();
+                    break;
                 case 4:
                     //mostrar lista de autores vivos segun año
                     mostrarAutoresVivos();
+                    break;
                 case 5:
                     //mostrar libros por idioma, debe generar un texto
                     //que pueda hacer elegir entre distintos idiomas
                     //y luego mostrar los libros registrados en el idioma correspondiente
-                    //mostrarLibrosPorIdioma();
+                    mostrarLibrosPorIdioma();
+                    break;
                 case 0:
                     System.out.println("""
                             ====CERRANDO LA APLICACION=====
@@ -112,8 +117,8 @@ public class principal {
             // Trae los datos que se necesitan en DatosAutor.
             DatosAutor nombreAutores = datosLibro.datosAutor().get(0);
             String nombreAutor = nombreAutores.nombre();
-            String fechaNacimiento = nombreAutores.fechaDeNacimiento(); // Puede que sea un String o LocalDate
-            String fechaFallecimiento = nombreAutores.fechaDeFallecimiento();
+            Integer fechaNacimiento = Integer.valueOf(nombreAutores.fechaDeNacimiento()); // Puede que sea un String o LocalDate
+            Integer fechaFallecimiento = Integer.valueOf(nombreAutores.fechaDeFallecimiento());
             //Busca si existe el nombre del autor
             Autor datosAutor = AutorRepositorio.findByNombre(nombreAutor)
                     .orElseGet(() -> {
@@ -149,11 +154,15 @@ public class principal {
 
     public void mostrarAutoresVivos() {
         System.out.print("Ingrese el año para consultar autores vivos: ");
-        var año = teclado.nextLine();
+        var año = teclado.nextInt();
         List<Autor> autoresVivos = AutorRepositorio.findAutoresVivos(año);
         System.out.println(autoresVivos);
     }
 
+    private void mostrarLibrosPorIdioma() {
+        LibroPorIdioma libroPorIdioma = new LibroPorIdioma(libroRepositorio);
+        libroPorIdioma.mostrarMenuIdioma();
+    }
 
 
 
